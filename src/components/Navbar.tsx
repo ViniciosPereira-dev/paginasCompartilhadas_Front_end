@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -11,46 +11,65 @@ import {
   PopoverButton,
   PopoverGroup,
   PopoverPanel,
-} from '@headlessui/react'
+} from "@headlessui/react";
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
   BookOpenIcon,
   BookmarkIcon,
   XMarkIcon,
-  InboxArrowDownIcon
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+  InboxArrowDownIcon,
+} from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const products = [
-  { name: 'Doar um livro', description: 'Compartilhe conhecimento com outros usuários', href: '#', icon: BookOpenIcon },
-  { name: 'Explorar livros disponíveis', description: 'Descubra novos livros para leitura ou troca', href: '#', icon: MagnifyingGlassIcon },
-  { name: 'Minha Biblioteca', description: 'Gerencie seus livros favoritos e adicionados', href: '#', icon: BookmarkIcon, },
-  { name: 'Solicitações & Requisições', description: 'Acompanhe pedidos de troca e doação', href: '#', icon: InboxArrowDownIcon },
-]
-
+  {
+    name: "Doar um livro",
+    description: "Compartilhe conhecimento com outros usuários",
+    href: "#",
+    icon: BookOpenIcon,
+  },
+  {
+    name: "Explorar livros disponíveis",
+    description: "Descubra novos livros para leitura ou troca",
+    href: "#",
+    icon: MagnifyingGlassIcon,
+  },
+  {
+    name: "Minha Biblioteca",
+    description: "Gerencie seus livros favoritos e adicionados",
+    href: "#",
+    icon: BookmarkIcon,
+  },
+  {
+    name: "Solicitações & Requisições",
+    description: "Acompanhe pedidos de troca e doação",
+    href: "#",
+    icon: InboxArrowDownIcon,
+  },
+];
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white dark:bg-gray-900">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900">
+      <nav
+        aria-label="Global"
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+      >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <img
-              alt=""
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              className="h-8 w-auto dark:hidden"
-            />
-            <img
-              alt=""
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-              className="h-8 w-auto not-dark:hidden"
-            />
+          <a href="#" className="-m-1.5 flex items-center gap-2 p-1.5">
+            <span className="sr-only">Páginas Compartilhadas</span>
+
+            <BookOpenIcon className="h-8 w-8 text-indigo-600" />
+
+            <span className="text-lg font-bold text-gray-900 dark:text-white">
+              Páginas Compartilhadas
+            </span>
           </a>
         </div>
+
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -61,23 +80,34 @@ export default function Navbar() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        
+
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-         
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <a
+            href="#"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+          >
             Home
           </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
-            Disponiveis
+          <a
+            href="#"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+          >
+            livros
           </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <a
+            href="#"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+          >
             Sobre nós
           </a>
 
-         <Popover className="relative">
+          <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900 dark:text-white">
               Livros
-              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400 dark:text-gray-500" />
+              <ChevronDownIcon
+                aria-hidden="true"
+                className="size-5 flex-none text-gray-400 dark:text-gray-500"
+              />
             </PopoverButton>
 
             <PopoverPanel
@@ -97,27 +127,37 @@ export default function Navbar() {
                       />
                     </div>
                     <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900 dark:text-white">
+                      <a
+                        href={item.href}
+                        className="block font-semibold text-gray-900 dark:text-white"
+                      >
                         {item.name}
                         <span className="absolute inset-0" />
                       </a>
-                      <p className="mt-1 text-gray-600 dark:text-gray-400">{item.description}</p>
+                      <p className="mt-1 text-gray-600 dark:text-gray-400">
+                        {item.description}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
-
             </PopoverPanel>
           </Popover>
-
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <a
+            href="#"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+          >
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
       </nav>
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+      <Dialog
+        open={mobileMenuOpen}
+        onClose={setMobileMenuOpen}
+        className="lg:hidden"
+      >
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
@@ -146,7 +186,6 @@ export default function Navbar() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10 dark:divide-white/10">
               <div className="space-y-2 py-6">
- 
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
@@ -157,22 +196,25 @@ export default function Navbar() {
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Marketplace
+                  livros
                 </a>
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Company
+                  Sobre nós
                 </a>
 
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5">
-                    Product
-                    <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-open:rotate-180" />
+                    Livros
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="size-5 flex-none group-data-open:rotate-180"
+                    />
                   </DisclosureButton>
                   <DisclosurePanel className="mt-2 space-y-2">
-                    {[...products ].map((item) => (
+                    {[...products].map((item) => (
                       <DisclosureButton
                         key={item.name}
                         as="a"
@@ -184,14 +226,13 @@ export default function Navbar() {
                     ))}
                   </DisclosurePanel>
                 </Disclosure>
-
               </div>
               <div className="py-6">
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Log in
+                  Log in <span aria-hidden="true">&rarr;</span>
                 </a>
               </div>
             </div>
@@ -199,5 +240,5 @@ export default function Navbar() {
         </DialogPanel>
       </Dialog>
     </header>
-  )
+  );
 }
