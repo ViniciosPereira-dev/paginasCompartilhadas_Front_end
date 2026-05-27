@@ -5,8 +5,6 @@ import type { Book } from "../types/book";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-
-// Importações do Lucide para ícones bonitos (opcional, pode usar texto se quiser)
 import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
 import "swiper/css";
