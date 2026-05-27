@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 
 // Importações do Lucide para ícones bonitos (opcional, pode usar texto se quiser)
-import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { BookOpenIcon, ChevronLeft, ChevronRight } from "lucide-react"; 
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -32,21 +32,24 @@ export default function AvailableBooks() {
     }
     loadBooks();
   }, []);
+if (loading) {
+  return (
+    <section className="py-24">
+      <div className="mx-auto max-w-7xl px-6 flex flex-col items-center">
+        <BookOpenIcon className="h-16 w-16 text-indigo-600 animate-bounce" />
 
-  if (loading) {
-    return (
-      <section className="py-24">
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400">Carregando livros...</p>
-        </div>
-      </section>
-    );
-  }
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
+          Buscando livros disponíveis...
+        </p>
+      </div>
+    </section>
+  );
+}
 
   return (
-    <section className="relative bg-gray-900 py-24">
+    <section id="livros-disponiveis" className="relative bg-gray-900 py-20">
       <div className="mx-auto max-w-7xl px-6">
-        {/* HEADER */}
+
         <div className="mb-12 text-center">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Livros Disponíveis
@@ -56,23 +59,23 @@ export default function AvailableBooks() {
           </p>
         </div>
 
-        {/* SWIPER + BOTÕES CUSTOMIZADOS */}
+
         {books.length > 0 ? (
-          <div className="relative px-12"> {/* Padding que garante espaço para as setas fora do card */}
+          <div className="relative px-12"> 
             
-            {/* Botão Esquerdo Customizado */}
+
             <button className="btn-prev-custom absolute top-1/2 left-0 z-10 -translate-y-1/2 rounded-full bg-indigo-600 p-2 text-white shadow-lg transition hover:bg-indigo-500 disabled:opacity-40">
               <ChevronLeft className="h-6 w-6" />
             </button>
 
-            {/* Botão Direito Customizado */}
+  
             <button className="btn-next-custom absolute top-1/2 right-0 z-10 -translate-y-1/2 rounded-full bg-indigo-600 p-2 text-white shadow-lg transition hover:bg-indigo-500 disabled:opacity-40">
               <ChevronRight className="h-6 w-6" />
             </button>
 
             <Swiper
               modules={[Navigation, Pagination]}
-              // Aqui passamos as classes dos nossos próprios botões
+
               navigation={{
                 prevEl: ".btn-prev-custom",
                 nextEl: ".btn-next-custom",
@@ -103,8 +106,7 @@ export default function AvailableBooks() {
           <p className="text-center text-gray-400">Nenhum livro disponível.</p>
         )}
 
-        {/* BOTÃO INFERIOR */}
-        <div className="mt-12 text-center">
+        <div className="mt-4 text-center">
           <button className="rounded-xl bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-indigo-500">
             Ver catálogo completo →
           </button>
