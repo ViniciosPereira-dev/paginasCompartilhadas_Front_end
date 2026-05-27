@@ -35,7 +35,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               <li>
                 <a
-                  href="#"
+                  href="#hero"
                   className="text-sm text-gray-600 transition dark:text-gray-400 "
                 >
                   Home
@@ -44,7 +44,7 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="#"
+                  href="#livros-disponiveis"
                   className="text-sm text-gray-600 transition dark:text-gray-400 "
                 >
                   Livros
@@ -53,7 +53,7 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="#"
+                  href="#sobre"
                   className="text-sm text-gray-600 transition    dark:text-gray-400"
                 >
                   Sobre Nós

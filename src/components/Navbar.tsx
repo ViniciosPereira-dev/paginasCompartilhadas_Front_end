@@ -22,6 +22,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
+import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom"; // Importante para navegar sem recarregar a página
+
 const products = [
   {
     name: "Doar um livro",
@@ -51,6 +54,7 @@ const products = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAutenticado, nomeUsuario, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900">
@@ -83,19 +87,19 @@ export default function Navbar() {
 
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <a
-            href="#"
+            href="#hero"
             className="text-sm/6 font-semibold text-gray-900 dark:text-white"
           >
             Home
           </a>
           <a
-            href="#"
+            href="#livros-disponiveis"
             className="text-sm/6 font-semibold text-gray-900 dark:text-white"
           >
             livros
           </a>
           <a
-            href="#"
+            href="#sobre"
             className="text-sm/6 font-semibold text-gray-900 dark:text-white"
           >
             Sobre nós
@@ -144,13 +148,38 @@ export default function Navbar() {
             </PopoverPanel>
           </Popover>
         </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a
-            href="#"
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-x-6">
+          {isAutenticado ? (
+            <>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Olá,{" "}
+                <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                  {nomeUsuario}
+                </span>
+              </span>
+              <button
+                onClick={logout}
+                className="text-sm font-semibold p-2 px-4 rounded-md bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/register"
+                className="text-sm font-semibold bg-indigo-600 text-white p-2 px-4 rounded-md hover:bg-indigo-500 transition-colors"
+              >
+                Criar Conta
+              </Link>
+            </>
+          )}
         </div>
       </nav>
       <Dialog
@@ -187,19 +216,19 @@ export default function Navbar() {
             <div className="-my-6 divide-y divide-gray-500/10 dark:divide-white/10">
               <div className="space-y-2 py-6">
                 <a
-                  href="#"
+                  href="#hero"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   Home
                 </a>
                 <a
-                  href="#"
+                  href="#livros-disponiveis"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   livros
                 </a>
                 <a
-                  href="#"
+                  href="#sobre"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   Sobre nós
@@ -227,13 +256,41 @@ export default function Navbar() {
                   </DisclosurePanel>
                 </Disclosure>
               </div>
+              {/* Procure por algo parecido com isso no final e substitua: */}
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
-                >
-                  Log in <span aria-hidden="true">&rarr;</span>
-                </a>
+                {isAutenticado ? (
+                  <div className="space-y-2">
+                    <p className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 dark:text-white">
+                      Olá, {nomeUsuario}
+                    </p>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="-mx-3 block w-full text-left rounded-lg px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-gray-50 dark:hover:bg-white/5"
+                    >
+                      Sair da conta
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-indigo-600 hover:bg-gray-50 dark:hover:bg-white/5"
+                    >
+                      Criar Conta
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

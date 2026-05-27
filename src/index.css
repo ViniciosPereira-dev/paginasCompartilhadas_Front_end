@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-/* Não importamos mais o "swiper/css/navigation" no JS, então controlamos tudo aqui */
+html {
+  scroll-behavior: smooth;
+}
+
 .swiper-pagination {
   margin-top: 20px;
   position: relative;

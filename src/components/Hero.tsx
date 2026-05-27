@@ -2,7 +2,7 @@
 
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-gray-900 ">
+    <section id="hero" className="relative isolate overflow-hidden bg-gray-900 ">
    
       <div
         aria-hidden="true"
