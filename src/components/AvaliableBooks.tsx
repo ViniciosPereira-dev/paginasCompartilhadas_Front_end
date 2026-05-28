@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BookCard from "./BookCard";
 import { getBooks } from "../services/bookService";
 import type { Book } from "../types/book";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -9,6 +10,7 @@ import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function AvailableBooks() {
   const [books, setBooks] = useState<Book[]>([]);

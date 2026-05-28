@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import type { ApiResponse } from "../types/api";
+import { BookOpenIcon } from "lucide-react";
 
 export const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -14,32 +15,36 @@ export const Register: React.FC = () => {
   const [phone, setPhone] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false); 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrorMessage("");
+    setShowSuccess(false);
     setIsLoading(true);
 
     const userData = {
       name,
       email,
       password,
-      age: Number(age), 
+      age: Number(age),
       gender,
       phone,
     };
 
     try {
-
       const response = await api.post<ApiResponse<any>>("/users", userData);
 
       if (response.data.success) {
-        alert("Conta criada com sucesso! Redirecionando para o login...");
-        navigate("/login"); 
+        setShowSuccess(true);
+
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       }
     } catch (error: any) {
-
       if (error.response && error.response.data && error.response.data.error) {
         setErrorMessage(error.response.data.error);
       } else {
@@ -51,75 +56,217 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px", fontFamily: "sans-serif" }}>
-      <h2>Criar Nova Conta</h2>
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-gray-900">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col items-center">
+        <BookOpenIcon className="h-10 w-10 text-indigo-500" />
+        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-white">
+          Criar nova conta
+        </h2>
+      </div>
 
-      {errorMessage && (
-        <div style={{ color: "red", backgroundColor: "#ffebee", padding: "10px", marginBottom: "15px", borderRadius: "4px" }}>
-          {errorMessage}
-        </div>
-      )}
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {showSuccess && (
+          <div className="mb-6 rounded-md bg-emerald-500/10 p-4 border border-emerald-500/20 flex items-start gap-3 dynamic-fade-in">
+            <svg
+              className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div>
+              <h3 className="text-sm font-semibold text-emerald-400">
+                Conta criada!
+              </h3>
+              <p className="text-xs text-emerald-500/90 mt-0.5">
+                Redirecionando para a tela de login...
+              </p>
+            </div>
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <input
-          type="text"
-          placeholder="Nome Completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        {errorMessage && (
+          <div className="mb-6 rounded-md bg-red-500/10 p-4 border border-red-500/20 flex items-start gap-3">
+            <svg
+              className="h-5 w-5 text-red-400 shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <span className="text-sm text-red-400">{errorMessage}</span>
+          </div>
+        )}
 
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Nome Completo */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Nome Completo
+            </label>
+            <div className="mt-2">
+              <input
+                id="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu nome completo"
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          {/* E-mail */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Endereço de E-mail
+            </label>
+            <div className="mt-2">
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                autoComplete="email"
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
 
-        <input
-          type="number"
-          placeholder="Idade"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          required
-        />
+          {/* Senha */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Senha
+            </label>
+            <div className="mt-2">
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
 
-        <select value={gender} onChange={(e) => setGender(e.target.value)} required>
-          <option value="">Selecione o Gênero</option>
-          <option value="Masculino">Masculino</option>
-          <option value="Feminino">Feminino</option>
-          <option value="Outro">Outro</option>
-        </select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="age"
+                className="block text-sm/6 font-medium text-gray-100"
+              >
+                Idade
+              </label>
+              <div className="mt-2">
+                <input
+                  id="age"
+                  type="number"
+                  required
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  placeholder="Ex: 25"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                />
+              </div>
+            </div>
 
-        <input
-          type="tel"
-          placeholder="Telefone (ex: 15999999999)"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-        />
+            <div>
+              <label
+                htmlFor="gender"
+                className="block text-sm/6 font-medium text-gray-100"
+              >
+                Gênero
+              </label>
+              <div className="mt-2">
+                <select
+                  id="gender"
+                  required
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="block w-full rounded-md bg-white/5 px-3 py-[7px] text-base text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 [&>option]:bg-gray-800"
+                >
+                  <option value="" disabled hidden>
+                    Selecione
+                  </option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          style={{ padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-        >
-          {isLoading ? "Cadastrando..." : "Cadastrar"}
-        </button>
-      </form>
-      
-      <p style={{ marginTop: "15px", textAlign: "center", fontSize: "14px" }}>
-        Já tem uma conta? <span style={{ color: "#007bff", cursor: "pointer" }} onClick={() => navigate("/login")}>Faça Login</span>
-      </p>
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Telefone
+            </label>
+            <div className="mt-2">
+              <input
+                id="phone"
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="(15) 99999-9999"
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading || showSuccess}
+              className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading
+                ? "Cadastrando..."
+                : showSuccess
+                  ? "Sucesso!"
+                  : "Cadastrar"}
+            </button>
+          </div>
+        </form>
+
+        <p className="mt-10 text-center text-sm/6 text-gray-400">
+          Já tem uma conta?{" "}
+          <button
+            onClick={() => navigate("/login")}
+            className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none p-0 cursor-pointer"
+          >
+            Faça Login
+          </button>
+        </p>
+      </div>
     </div>
   );
 };
