@@ -1,6 +1,13 @@
 import { useState } from "react";
+import {
+  ExclamationTriangleIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+
 import { obterCapaPorIsbn, CAPA_PADRAO } from "../utils/bookHelpers";
 import { Toast } from "./Toast";
+import { useAuth } from "../contexts/AuthContext";
 
 type BookCardProps = {
   id: number;
@@ -9,6 +16,7 @@ type BookCardProps = {
   genre: string;
   owner: string;
   isbn: string;
+  userId: number; 
   isOwner?: boolean;
   onDeleteSuccess?: () => void;
 };
@@ -20,14 +28,15 @@ export default function BookCard({
   genre,
   owner,
   isbn,
+  userId, // <-- RECEBA COMO 'userId' AQUI TAMBÉM
   isOwner = false,
   onDeleteSuccess,
 }: BookCardProps) {
-  // ================= ESTADOS =================
+  const { idUsuario } = useAuth();
 
+  // ================= ESTADOS =================
   const [isModalAberto, setIsModalAberto] = useState(false);
-  const [isModalDeletarAberto, setIsModalDeletarAberto] =
-    useState(false);
+  const [isModalDeletarAberto, setIsModalDeletarAberto] = useState(false);
 
   const [editTitle, setEditTitle] = useState(title);
   const [editAuthor, setEditAuthor] = useState(author);
@@ -42,8 +51,10 @@ export default function BookCard({
     tipo: "success" | "error";
   } | null>(null);
 
-  // ================= TOAST =================
+  // ================= REGRAS =================
+  const eOMeuProprioLivro = userId === idUsuario;
 
+  // ================= TOAST =================
   const mostrarToast = (
     mensagem: string,
     tipo: "success" | "error"
@@ -52,7 +63,6 @@ export default function BookCard({
   };
 
   // ================= DELETE =================
-
   const handleAcaoDeletar = async () => {
     setIsDeletando(true);
 
@@ -62,10 +72,7 @@ export default function BookCard({
       const response = await api.delete(`/books/${id}`);
 
       if (response.data.success) {
-        mostrarToast(
-          "Livro removido com sucesso!",
-          "success"
-        );
+        mostrarToast("Livro removido com sucesso!", "success");
 
         setIsModalDeletarAberto(false);
 
@@ -73,7 +80,7 @@ export default function BookCard({
           if (onDeleteSuccess) {
             onDeleteSuccess();
           }
-        }, 1500);
+        }, 1200);
       }
     } catch (error) {
       console.error("Erro ao deletar livro:", error);
@@ -88,7 +95,6 @@ export default function BookCard({
   };
 
   // ================= UPDATE =================
-
   const handleSalvarEdicao = async (
     e: React.FormEvent
   ) => {
@@ -116,7 +122,7 @@ export default function BookCard({
 
         setTimeout(() => {
           window.location.reload();
-        }, 1500);
+        }, 1200);
       }
     } catch (error) {
       console.error("Erro ao atualizar livro:", error);
@@ -131,10 +137,8 @@ export default function BookCard({
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-800 shadow-sm">
-      
+    <>
       {/* ================= TOAST ================= */}
-
       {toast && (
         <Toast
           mensagem={toast.mensagem}
@@ -143,111 +147,108 @@ export default function BookCard({
         />
       )}
 
-      {/* ================= CAPA ================= */}
+      {/* ================= CARD ================= */}
+      <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-800 shadow-lg transition hover:-translate-y-1 hover:border-indigo-500/30">
 
-      <div className="relative h-64 overflow-hidden bg-gray-700">
-        <img
-          src={obterCapaPorIsbn(isbn)}
-          alt={title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          onError={(e) => {
-            e.currentTarget.src = CAPA_PADRAO;
-          }}
-        />
-      </div>
+        {/* CAPA */}
+        <div className="relative h-72 overflow-hidden bg-gray-700">
+          <img
+            src={obterCapaPorIsbn(isbn)}
+            alt={title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = CAPA_PADRAO;
+            }}
+          />
 
-      {/* ================= CONTEÚDO ================= */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-      <div className="p-5">
-        
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="line-clamp-2 min-h-[56px] text-lg font-semibold text-white">
-            {title}
-          </h3>
-
-          <span className="shrink-0 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+          <span className="absolute right-3 top-3 rounded-full bg-indigo-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
             {genre}
           </span>
         </div>
 
-        {/* Autor */}
-        <p className="mt-2 text-sm text-gray-300">
-          {author}
-        </p>
+        {/* CONTEÚDO */}
+        <div className="flex flex-col p-5">
+          <h3 className="line-clamp-2 min-h-[56px] text-lg font-bold text-white">
+            {title}
+          </h3>
 
-        {/* Owner */}
-        <div className="mt-4 border-t border-white/10 pt-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-            Compartilhado por
+          <p className="mt-2 text-sm text-gray-300">
+            {author}
           </p>
 
-          <p className="mt-1 text-sm font-medium text-gray-200">
-            {owner}
-          </p>
-        </div>
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              Compartilhado por
+            </p>
 
-        {/* ================= BOTÕES ================= */}
+            <p className="mt-1 text-sm font-medium text-gray-200">
+              {owner}
+            </p>
+          </div>
 
-        <div className="mt-5">
-          {isOwner ? (
-            <div className="flex gap-2">
-              
-              {/* Editar */}
+          {/* BOTÕES */}
+          <div className="mt-5">
+            {isOwner ? (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalAberto(true)}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-gray-700 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-600"
+                >
+                  <PencilSquareIcon className="h-4 w-4" />
+                  Editar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsModalDeletarAberto(true)
+                  }
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-600/20 px-3 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-600 hover:text-white"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  Excluir
+                </button>
+              </div>
+            ) : eOMeuProprioLivro ? (
               <button
-                type="button"
-                onClick={() => setIsModalAberto(true)}
-                className="flex-1 rounded-lg border border-white/10 bg-gray-700 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-600"
+                disabled
+                className="w-full cursor-not-allowed rounded-xl border border-white/5 bg-gray-700 px-4 py-2.5 text-sm font-semibold text-gray-400"
               >
-                Editar
+                Seu Livro
               </button>
-
-              {/* Excluir */}
-              <button
-                type="button"
-                onClick={() =>
-                  setIsModalDeletarAberto(true)
-                }
-                className="flex-1 rounded-lg border border-red-500/20 bg-red-600/20 px-3 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-600 hover:text-white"
-              >
-                Excluir
+            ) : (
+              <button className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                Solicitar Livro
               </button>
-            </div>
-          ) : (
-            <button className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
-              Solicitar Livro
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
       {/* ================= MODAL EDITAR ================= */}
-
       {isModalAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl border border-white/10 bg-gray-900 p-6 text-white shadow-2xl">
-            
-            {/* Header */}
+
             <div className="mb-6">
               <h3 className="text-xl font-bold">
-                Editar Informações
+                Editar Livro
               </h3>
 
-              <p className="mt-1 text-xs text-gray-400">
-                Altere os dados do livro selecionado.
+              <p className="mt-1 text-sm text-gray-400">
+                Atualize as informações abaixo.
               </p>
             </div>
 
-            {/* Form */}
             <form
               onSubmit={handleSalvarEdicao}
               className="space-y-4"
             >
-              
-              {/* Título */}
               <div>
-                <label className="block text-xs font-medium text-gray-300">
+                <label className="block text-sm font-medium text-gray-300">
                   Título
                 </label>
 
@@ -258,13 +259,12 @@ export default function BookCard({
                   onChange={(e) =>
                     setEditTitle(e.target.value)
                   }
-                  className="mt-1 block w-full rounded-lg bg-white/5 px-3 py-2 text-sm text-white outline outline-1 outline-white/10 transition focus:outline-indigo-500"
+                  className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500"
                 />
               </div>
 
-              {/* Autor */}
               <div>
-                <label className="block text-xs font-medium text-gray-300">
+                <label className="block text-sm font-medium text-gray-300">
                   Autor
                 </label>
 
@@ -275,16 +275,13 @@ export default function BookCard({
                   onChange={(e) =>
                     setEditAuthor(e.target.value)
                   }
-                  className="mt-1 block w-full rounded-lg bg-white/5 px-3 py-2 text-sm text-white outline outline-1 outline-white/10 transition focus:outline-indigo-500"
+                  className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500"
                 />
               </div>
 
-              {/* Grid */}
               <div className="grid grid-cols-2 gap-4">
-                
-                {/* Gênero */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-300">
+                  <label className="block text-sm font-medium text-gray-300">
                     Gênero
                   </label>
 
@@ -295,13 +292,12 @@ export default function BookCard({
                     onChange={(e) =>
                       setEditGenre(e.target.value)
                     }
-                    className="mt-1 block w-full rounded-lg bg-white/5 px-3 py-2 text-sm text-white outline outline-1 outline-white/10 transition focus:outline-indigo-500"
+                    className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500"
                   />
                 </div>
 
-                {/* ISBN */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-300">
+                  <label className="block text-sm font-medium text-gray-300">
                     ISBN
                   </label>
 
@@ -312,35 +308,25 @@ export default function BookCard({
                     onChange={(e) =>
                       setEditIsbn(e.target.value)
                     }
-                    className="mt-1 block w-full rounded-lg bg-white/5 px-3 py-2 text-sm text-white outline outline-1 outline-white/10 transition focus:outline-indigo-500"
+                    className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500"
                   />
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-3 border-t border-white/10 pt-4">
-                
-                {/* Cancelar */}
+              <div className="flex gap-3 border-t border-white/10 pt-5">
                 <button
                   type="button"
-                  onClick={() =>
-                    setIsModalAberto(false)
-                  }
-                  className="flex-1 rounded-lg border border-white/5 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 transition hover:bg-gray-700"
+                  onClick={() => setIsModalAberto(false)}
+                  className="flex-1 rounded-xl border border-white/10 bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-gray-700"
                 >
                   Cancelar
                 </button>
 
-                {/* Salvar */}
                 <button
                   type="submit"
                   disabled={isSalvando}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-50"
+                  className="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-50"
                 >
-                  {isSalvando && (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  )}
-
                   {isSalvando
                     ? "Salvando..."
                     : "Salvar"}
@@ -352,75 +338,47 @@ export default function BookCard({
       )}
 
       {/* ================= MODAL EXCLUIR ================= */}
-
       {isModalDeletarAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          
-          <div className="w-full max-w-sm space-y-5 rounded-2xl border border-white/10 bg-gray-900 p-6 text-center text-white shadow-2xl">
-            
-            {/* Ícone */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-gray-900 p-6 text-center text-white shadow-2xl">
+
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v2m0 4h.01m-.01-10a9 9 0 100 18 9 9 0 000-18z"
-                />
-              </svg>
+              <ExclamationTriangleIcon className="h-7 w-7 text-red-400" />
             </div>
 
-            {/* Texto */}
-            <div>
-              <h3 className="text-xl font-bold">
-                Remover Livro
-              </h3>
+            <h3 className="mt-4 text-xl font-bold">
+              Remover Livro
+            </h3>
 
-              <p className="mt-2 text-sm text-gray-400">
-                Tem certeza que deseja excluir{" "}
-                <span className="font-semibold text-white">
-                  "{title}"
-                </span>
-                ?
-              </p>
+            <p className="mt-2 text-sm text-gray-400">
+              Tem certeza que deseja excluir{" "}
+              <span className="font-semibold text-white">
+                "{title}"
+              </span>
+              ?
+            </p>
 
-              <p className="mt-1 text-xs text-red-400">
-                Essa ação não poderá ser desfeita.
-              </p>
-            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Essa ação não poderá ser desfeita.
+            </p>
 
-            {/* Botões */}
-            <div className="flex gap-3 pt-2">
-              
-              {/* Cancelar */}
+            <div className="mt-6 flex gap-3">
               <button
                 type="button"
                 onClick={() =>
                   setIsModalDeletarAberto(false)
                 }
-                disabled={isDeletando}
-                className="flex-1 rounded-lg border border-white/10 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 transition hover:bg-gray-700 disabled:opacity-50"
+                className="flex-1 rounded-xl border border-white/10 bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-gray-700"
               >
                 Cancelar
               </button>
 
-              {/* Excluir */}
               <button
                 type="button"
-                onClick={handleAcaoDeletar}
                 disabled={isDeletando}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500 disabled:opacity-50"
+                onClick={handleAcaoDeletar}
+                className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500 disabled:opacity-50"
               >
-                {isDeletando && (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                )}
-
                 {isDeletando
                   ? "Excluindo..."
                   : "Excluir"}
@@ -429,6 +387,6 @@ export default function BookCard({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

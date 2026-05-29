@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import {
   Dialog,
   DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
   Popover,
   PopoverButton,
   PopoverGroup,
@@ -21,9 +19,7 @@ import {
   InboxArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom"; // Importante para navegar sem recarregar a página
 
 const products = [
   {
@@ -35,7 +31,7 @@ const products = [
   {
     name: "Explorar livros disponíveis",
     description: "Descubra novos livros para leitura ou troca",
-    href: "#", // Link para a página de biblioteca do usuário
+    href: "/catalog", // Link para a página de biblioteca do usuário
     icon: MagnifyingGlassIcon,
   },
   {
@@ -55,6 +51,31 @@ const products = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAutenticado, nomeUsuario, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const navegarERolar = (e: React.MouseEvent, secaoId: string) => {
+    e.preventDefault();
+
+    if (location.pathname === "/") {
+      // Se já está na Home, rola suavemente para a seção na hora
+      const elemento = document.getElementById(secaoId);
+      if (elemento) {
+        elemento.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Se está em outra página (como /catalog), joga para a Home primeiro
+      navigate("/");
+
+      // Aguarda um pequeno milissegundo para a Home carregar e faz a rolagem
+      setTimeout(() => {
+        const elemento = document.getElementById(secaoId);
+        if (elemento) {
+          elemento.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900">
@@ -63,15 +84,17 @@ export default function Navbar() {
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 flex items-center gap-2 p-1.5">
+          <Link
+            to="/"
+            onClick={(e) => navegarERolar(e, "hero")}
+            className="-m-1.5 flex items-center gap-2 p-1.5 focus:outline-none"
+          >
             <span className="sr-only">Páginas Compartilhadas</span>
-
             <BookOpenIcon className="h-8 w-8 text-indigo-600" />
-
             <span className="text-lg font-bold text-gray-900 dark:text-white">
               Páginas Compartilhadas
             </span>
-          </a>
+          </Link>
         </div>
 
         <div className="flex lg:hidden">
@@ -88,19 +111,24 @@ export default function Navbar() {
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <a
             href="#hero"
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+            onClick={(e) => navegarERolar(e, "hero")}
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
           >
             Home
           </a>
+
           <a
             href="#livros-disponiveis"
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+            onClick={(e) => navegarERolar(e, "livros-disponiveis")}
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
           >
-            livros
+            Livros
           </a>
+
           <a
             href="#sobre"
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+            onClick={(e) => navegarERolar(e, "sobre")}
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
           >
             Sobre nós
           </a>
@@ -217,44 +245,36 @@ export default function Navbar() {
               <div className="space-y-2 py-6">
                 <a
                   href="#hero"
+                  onClick={(e) => {
+                    navegarERolar(e, "hero");
+                    setMobileMenuOpen(false);
+                  }}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   Home
                 </a>
+
                 <a
                   href="#livros-disponiveis"
+                  onClick={(e) => {
+                    navegarERolar(e, "livros-disponiveis");
+                    setMobileMenuOpen(false);
+                  }}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  livros
+                  Livros
                 </a>
+
                 <a
                   href="#sobre"
+                  onClick={(e) => {
+                    navegarERolar(e, "sobre");
+                    setMobileMenuOpen(false);
+                  }}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   Sobre nós
                 </a>
-
-                <Disclosure as="div" className="-mx-3">
-                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5">
-                    Livros
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="size-5 flex-none group-data-open:rotate-180"
-                    />
-                  </DisclosureButton>
-                  <DisclosurePanel className="mt-2 space-y-2">
-                    {[...products].map((item) => (
-                      <DisclosureButton
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
-                      >
-                        {item.name}
-                      </DisclosureButton>
-                    ))}
-                  </DisclosurePanel>
-                </Disclosure>
               </div>
 
               <div className="py-6">

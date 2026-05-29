@@ -27,3 +27,22 @@ export interface CriarLivroInput {
   description?: string;     
   status: "AVAILABLE";
 }
+
+export interface SurpreendaMeResponse {
+  message: string;
+  book: {
+    id: number;
+    title: string;
+    author: string;
+    genre: string;
+    isbn?: string;
+    description?: string;
+    status: string;
+  } | null;
+  owner?: {
+    id: number;
+    name: string;
+    phone?: string;
+  };
+}
+
