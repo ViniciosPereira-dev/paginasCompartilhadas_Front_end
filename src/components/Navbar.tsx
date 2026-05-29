@@ -29,19 +29,19 @@ const products = [
   {
     name: "Doar um livro",
     description: "Compartilhe conhecimento com outros usuários",
-    href: "#",
+    href: "/books/create", // Link para a página de criação de livro
     icon: BookOpenIcon,
   },
   {
     name: "Explorar livros disponíveis",
     description: "Descubra novos livros para leitura ou troca",
-    href: "#",
+    href: "#", // Link para a página de biblioteca do usuário
     icon: MagnifyingGlassIcon,
   },
   {
     name: "Minha Biblioteca",
     description: "Gerencie seus livros favoritos e adicionados",
-    href: "#",
+    href: "/library",
     icon: BookmarkIcon,
   },
   {
@@ -256,7 +256,7 @@ export default function Navbar() {
                   </DisclosurePanel>
                 </Disclosure>
               </div>
-              {/* Procure por algo parecido com isso no final e substitua: */}
+
               <div className="py-6">
                 {isAutenticado ? (
                   <div className="space-y-2">

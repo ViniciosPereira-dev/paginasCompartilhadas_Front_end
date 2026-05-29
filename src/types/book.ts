@@ -17,3 +17,13 @@ export interface Book {
 
   createdAt: string;
 }
+
+export interface CriarLivroInput {
+  title: string;
+  author: string;
+  genre: string;
+  isbn: string;
+  publicationDate: string; 
+  description?: string;     
+  status: "AVAILABLE";
+}

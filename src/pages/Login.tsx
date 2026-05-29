@@ -33,7 +33,7 @@ export const Login: React.FC = () => {
       if (response.data.success) {
         const { token, user } = response.data.data;
 
-        login(token, user.name);
+        login(token, user.name, user.id);
         setIsSuccess(true);
 
         setTimeout(() => {

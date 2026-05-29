@@ -93,10 +93,12 @@ if (loading) {
               {books.map((book) => (
                 <SwiperSlide key={book.id} className="h-auto">
                   <BookCard
+                    id={book.id}
                     title={book.title}
                     author={book.author}
                     genre={book.genre}
                     owner={book.user.name}
+                    isbn={book.isbn}
                   />
                 </SwiperSlide>
               ))}
