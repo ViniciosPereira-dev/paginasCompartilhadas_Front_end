@@ -20,6 +20,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useAuth } from "../contexts/AuthContext";
+import { ConfirmModal } from "./ConfirmModal";
 
 const products = [
   {
@@ -43,7 +44,7 @@ const products = [
   {
     name: "Solicitações & Requisições",
     description: "Acompanhe pedidos de troca e doação",
-    href: "#",
+    href: "/requests",
     icon: InboxArrowDownIcon,
   },
 ];
@@ -51,6 +52,7 @@ const products = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAutenticado, nomeUsuario, logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -112,7 +114,7 @@ export default function Navbar() {
           <a
             href="#hero"
             onClick={(e) => navegarERolar(e, "hero")}
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-300 transition"
           >
             Home
           </a>
@@ -120,7 +122,7 @@ export default function Navbar() {
           <a
             href="#livros-disponiveis"
             onClick={(e) => navegarERolar(e, "livros-disponiveis")}
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-300 transition"
           >
             Livros
           </a>
@@ -128,13 +130,13 @@ export default function Navbar() {
           <a
             href="#sobre"
             onClick={(e) => navegarERolar(e, "sobre")}
-            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition"
+            className="text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-300 transition"
           >
             Sobre nós
           </a>
 
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900 dark:text-white">
+            <PopoverButton className="cursor-pointer flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900 dark:text-white hover:text-indigo-300 transition ">
               Livros
               <ChevronDownIcon
                 aria-hidden="true"
@@ -186,7 +188,7 @@ export default function Navbar() {
                 </span>
               </span>
               <button
-                onClick={logout}
+                onClick={() => setShowLogoutModal(true)}
                 className="text-sm font-semibold p-2 px-4 rounded-md bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
               >
                 Sair
@@ -215,33 +217,28 @@ export default function Navbar() {
         onClose={setMobileMenuOpen}
         className="lg:hidden"
       >
-        <div className="fixed inset-0 z-50" />
+        {/* BACKDROP (corrigido) */}
+        <div className="fixed inset-0 z-40 bg-black/30" />
+
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:sm:ring-gray-100/10">
+          {/* HEADER */}
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto dark:hidden"
-              />
-              <img
-                alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto not-dark:hidden"
-              />
-            </a>
+            <span className="text-lg font-bold text-gray-900 dark:text-white">
+              Menu
+            </span>
+
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
               className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-400"
             >
-              <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="size-6" />
             </button>
           </div>
+
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10 dark:divide-white/10">
+              {/* LINKS PRINCIPAIS */}
               <div className="space-y-2 py-6">
                 <a
                   href="#hero"
@@ -277,20 +274,43 @@ export default function Navbar() {
                 </a>
               </div>
 
+              {/* 🔥 NOVO: MENU LIVROS (ANTES FALTAVA ISSO) */}
+              <div className="space-y-2 py-6">
+                <p className="px-3 text-xs font-bold uppercase text-gray-400">
+                  Ações com livros
+                </p>
+
+                {products.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="-mx-3 flex items-center gap-3 rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
+                  >
+                    <item.icon className="h-5 w-5 text-indigo-500" />
+                    <div>
+                      <p>{item.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* AUTH */}
               <div className="py-6">
                 {isAutenticado ? (
                   <div className="space-y-2">
                     <p className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 dark:text-white">
                       Olá, {nomeUsuario}
                     </p>
+
                     <button
-                      onClick={() => {
-                        logout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="-mx-3 block w-full text-left rounded-lg px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-gray-50 dark:hover:bg-white/5"
+                      onClick={() => setShowLogoutModal(true)}
+                      className="text-sm font-semibold p-2 px-4 rounded-md bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
                     >
-                      Sair da conta
+                      Sair
                     </button>
                   </div>
                 ) : (
@@ -302,6 +322,7 @@ export default function Navbar() {
                     >
                       Log in
                     </Link>
+
                     <Link
                       to="/register"
                       onClick={() => setMobileMenuOpen(false)}
@@ -316,6 +337,19 @@ export default function Navbar() {
           </div>
         </DialogPanel>
       </Dialog>
+
+      <ConfirmModal
+        open={showLogoutModal}
+        title="Sair da conta"
+        message="Tem certeza que deseja encerrar sua sessão?"
+        confirmText="Sair"
+        cancelText="Cancelar"
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          logout();
+          setShowLogoutModal(false);
+        }}
+      />
     </header>
   );
 }

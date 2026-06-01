@@ -1,9 +1,15 @@
 "use client";
 
+import { useNavigate } from "react-router-dom";
+
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
-    <section id="hero" className="relative isolate overflow-hidden bg-gray-900 ">
-   
+    <section
+      id="hero"
+      className="relative isolate overflow-hidden bg-gray-900 "
+    >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -17,16 +23,15 @@ export default function Hero() {
         />
       </div>
 
-
       <div className="mx-auto max-w-3xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
         {/* Badge */}
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="rounded-full px-4 py-1.5 text-sm text-gray-300 ring-1 ring-white/10 hover:ring-white/20 transition">
-            📚 Junte-se à comunidade de Páginas compartilhadas e compartilhe conhecimento
+            📚 Junte-se à comunidade de Páginas compartilhadas e compartilhe
+            conhecimento
           </div>
         </div>
 
- 
         <div className="text-center">
           <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
             Compartilhe livros.
@@ -34,31 +39,28 @@ export default function Hero() {
             Inspire pessoas.
           </h1>
 
-    
           <p className="mt-8 text-lg leading-8 text-gray-300 sm:text-xl">
             Doe, troque e descubra novos livros em uma comunidade criada para
             conectar leitores apaixonados por conhecimento e aprendizado.
           </p>
 
-
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <a
-              href="#"
-              className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            <button
+              onClick={() => navigate("/catalog")}
+              className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
             >
               Explorar Livros
-            </a>
+            </button>
 
-            <a
-              href="#"
-              className="text-sm font-semibold text-white transition hover:text-indigo-300"
+            <button
+              onClick={() => navigate("books/create")}
+              className="cursor-pointer text-sm font-semibold text-white transition hover:text-indigo-300"
             >
               Doar um livro <span aria-hidden="true">→</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
-
 
       <div
         aria-hidden="true"

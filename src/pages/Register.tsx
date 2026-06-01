@@ -15,7 +15,7 @@ export const Register: React.FC = () => {
   const [phone, setPhone] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false); 
+  const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -24,13 +24,21 @@ export const Register: React.FC = () => {
     setShowSuccess(false);
     setIsLoading(true);
 
+    const telefoneLimpo = phone.replace(/\D/g, "");
+
+    if (telefoneLimpo.length !== 11) {
+      setErrorMessage("Informe um telefone válido com DDD.");
+      setIsLoading(false);
+      return;
+    }
+
     const userData = {
       name,
       email,
       password,
       age: Number(age),
       gender,
-      phone,
+      phone: telefoneLimpo,
     };
 
     try {
@@ -38,7 +46,6 @@ export const Register: React.FC = () => {
 
       if (response.data.success) {
         setShowSuccess(true);
-
 
         setTimeout(() => {
           navigate("/login");
@@ -235,7 +242,18 @@ export const Register: React.FC = () => {
                 type="tel"
                 required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  let valor = e.target.value.replace(/\D/g, "");
+
+                  if (valor.length > 11) {
+                    valor = valor.slice(0, 11);
+                  }
+
+                  valor = valor.replace(/^(\d{2})(\d)/, "($1) $2");
+                  valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
+
+                  setPhone(valor);
+                }}
                 placeholder="(15) 99999-9999"
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />

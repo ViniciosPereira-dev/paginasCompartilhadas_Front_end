@@ -17,6 +17,7 @@ import { Login } from "./pages/Login";
 import { CreateBook } from "./pages/CreateBook";
 import { MyLibrary } from "./pages/MyLibrary";
 import { AvailableBooks } from "./pages/AvailableBooks";
+import { Requests } from "./pages/Requests";
 
 // ================= LAYOUT PÚBLICO =================
 const PublicLayout = () => {
@@ -62,6 +63,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/books/create" element={<CreateBook />} />
             <Route path="/library" element={<MyLibrary />} />
+            <Route path="/requests" element={<Requests />} />
           </Route>
 
         </Routes>
