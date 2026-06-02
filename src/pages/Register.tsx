@@ -17,6 +17,7 @@ export const Register: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -26,8 +27,42 @@ export const Register: React.FC = () => {
 
     const telefoneLimpo = phone.replace(/\D/g, "");
 
+    if (name.trim().length < 3) {
+      setErrorMessage("O nome deve ter pelo menos 3 caracteres.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (Number(age) < 12) {
+      setErrorMessage("A idade mínima para cadastro é 12 anos.");
+      setIsLoading(false);
+      return;
+    }
+
     if (telefoneLimpo.length !== 11) {
       setErrorMessage("Informe um telefone válido com DDD.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMessage("A senha deve possuir pelo menos 8 caracteres.");
+      setIsLoading(false);
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/;
+
+    if (!passwordRegex.test(password)) {
+      setErrorMessage(
+        "A senha deve conter letra maiúscula, minúscula, número e caractere especial.",
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("As senhas não coincidem.");
       setIsLoading(false);
       return;
     }
@@ -181,6 +216,44 @@ export const Register: React.FC = () => {
               />
             </div>
           </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm/6 font-medium text-gray-100"
+            >
+              Confirmar Senha
+            </label>
+
+            <div className="mt-2">
+              <input
+                id="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          {confirmPassword && (
+            <p
+              className={`mt-1 text-xs ${
+                password === confirmPassword ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {password === confirmPassword
+                ? "✓ As senhas coincidem"
+                : "✗ As senhas não coincidem"}
+            </p>
+          )}
+
+          <p className="mt-1 text-xs text-gray-400">
+            A senha deve possuir pelo menos 8 caracteres, incluindo: letra
+            maiúscula, letra minúscula, número e caractere especial.
+          </p>
 
           <div className="grid grid-cols-2 gap-4">
             <div>

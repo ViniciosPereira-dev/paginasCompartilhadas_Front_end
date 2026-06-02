@@ -54,7 +54,6 @@ export const Login: React.FC = () => {
   return (
     <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-gray-900 w-full">
       
-      {/* Cabeçalho centralizado */}
       <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col items-center">
         <BookOpenIcon className="h-10 w-10 text-indigo-500" />
         <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-white">

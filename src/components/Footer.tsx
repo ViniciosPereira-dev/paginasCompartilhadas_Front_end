@@ -10,7 +10,6 @@ export default function Footer() {
         
         <div className="grid grid-cols-1 gap-10 md:grid-cols-5">
           
-          {/* Logo e descrição */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2">
               <BookOpenIcon className="h-8 w-8 text-indigo-600" />
@@ -26,7 +25,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Navegação */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               Navegação
@@ -62,7 +60,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Conta */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               Conta
@@ -71,7 +68,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               <li>
                 <a
-                  href="#"
+                  href="/register"
                   className="text-sm text-gray-600 transition    dark:text-gray-400"
                 >
                   Criar Conta
@@ -80,7 +77,7 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="#"
+                  href="/login"
                   className="text-sm text-gray-600 transition    dark:text-gray-400"
                 >
                   Login <span aria-hidden="true">&rarr;</span>
@@ -89,7 +86,7 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="#"
+                  href="/MyLibrary"
                   className="text-sm text-gray-600 transition    dark:text-gray-400"
                 >
                   Minha Biblioteca
