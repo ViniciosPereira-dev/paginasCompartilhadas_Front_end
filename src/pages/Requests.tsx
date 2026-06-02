@@ -165,7 +165,7 @@ export const Requests: React.FC = () => {
     const telefoneComDDI = `55${numero}`;
 
     const mensagem = encodeURIComponent(
-      `Olá ${nome}, vi seu pedido de doação de livro no sistema!`,
+      `Olá ${nome}, sua solicitação de doação foi recebida. Estou entrando em contato para alinharmos os detalhes da entrega do livro.`
     );
 
     window.open(`https://wa.me/${telefoneComDDI}?text=${mensagem}`, "_blank");
